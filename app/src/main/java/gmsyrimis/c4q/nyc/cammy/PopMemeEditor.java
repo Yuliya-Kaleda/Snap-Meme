@@ -3,6 +3,7 @@ package gmsyrimis.c4q.nyc.cammy;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,7 +36,7 @@ public class PopMemeEditor extends Activity {
     private Button saveBt;
     private LinearLayout linearPopLayout;
     // KEY VALUE PAIRS
-    private String imageUri = "";
+    private byte imageUri []= null;
     public static String IMAGE_URI_KEY = "uri";
     private String topText = "";
     public static String TOP_TEXT_KEY = "top";
@@ -54,19 +56,23 @@ public class PopMemeEditor extends Activity {
         linearPopLayout = (LinearLayout) findViewById(R.id.linear_pop_layout);
         // LOADING
         if (savedInstanceState == null) {
-            imageUri = getIntent().getExtras().getString(IMAGE_URI_KEY);
+            imageUri = getIntent().getByteArrayExtra(IMAGE_URI_KEY);
             topText = "";
             bottomText = "";
         } else {
-            imageUri = savedInstanceState.getString(IMAGE_URI_KEY);
+            imageUri = savedInstanceState.getByteArray(IMAGE_URI_KEY);
             topText = savedInstanceState.getString(TOP_TEXT_KEY);
             bottomText = savedInstanceState.getString(BOTTOM_TEXT_KEY);
         }
         // SETTING
         topRow.setText(topText);
         bottomRow.setText(bottomText);
-        int popId = Integer.parseInt(imageUri);
-        ivCustomPopular.setImageDrawable(getResources().getDrawable(popId));
+       // int popId = Integer.parseInt(imageUri);
+        ByteArrayInputStream imageStream = new ByteArrayInputStream(imageUri);
+        bitmap = BitmapFactory.decodeStream(imageStream);
+        ivCustomPopular.setImageBitmap(bitmap);
+
+        //ivCustomPopular.setImageDrawable(getResources().getDrawable(imageUri));
         // OLD SHARE BUTTON
         shareBt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,12 +163,12 @@ public class PopMemeEditor extends Activity {
 
 
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(IMAGE_URI_KEY, imageUri);
-        outState.putString(TOP_TEXT_KEY, topText);
-        outState.putString(BOTTOM_TEXT_KEY, bottomText);
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putString(IMAGE_URI_KEY, imageUri);
+//        outState.putString(TOP_TEXT_KEY, topText);
+//        outState.putString(BOTTOM_TEXT_KEY, bottomText);
+//    }
 
 }
